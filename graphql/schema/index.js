@@ -1,4 +1,4 @@
-const { buildSchema } = require('graphql');
+const { buildSchema } = require("graphql");
 const schema = `
     type Event {
         _id: ID!
