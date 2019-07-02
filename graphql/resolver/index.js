@@ -1,5 +1,6 @@
 const Event = require("../../models/Event");
 const User = require("../../models/User");
+const Booking = require("../../models/Booking");
 const bcrypt = require("bcryptjs");
 
 const events = async eventIds => {
@@ -31,6 +32,19 @@ const user = async userId => {
   }
 };
 
+const singleEvent = async eventId => {
+  try {
+    const event = await Event.findById(eventId);
+    return {
+      ...event._doc,
+      _id: event.id,
+      creator: user.bind(this, event.creator)
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   events: async () => {
     try {
@@ -44,6 +58,23 @@ module.exports = {
         };
       });
       return transformedEvents;
+    } catch (err) {
+      throw err;
+    }
+  },
+  bookings: async () => {
+    try {
+      const bookings = await Booking.find();
+      return bookings.map(booking => {
+        return {
+          ...booking._doc,
+          _id: booking.id,
+          user: user.bind(this, booking._doc.user),
+          event: singleEvent.bind(this, booking._doc.event),
+          createdAt: new Date(booking._doc.createdAt).toISOString(),
+          updatedAt: new Date(booking._doc.createdAt).toISOString()
+        };
+      });
     } catch (err) {
       throw err;
     }
@@ -94,5 +125,34 @@ module.exports = {
     } catch (err) {
       throw err;
     }
+  },
+  bookEvent: async args => {
+    const fetchedEvent = await Event.findOne({ _id: args.eventId });
+    const booking = new Booking({
+      user: "5d1479a0ac9e20ca369a008c",
+      event: fetchedEvent._id
+    });
+    const result = await booking.save();
+    return {
+      ...result._doc,
+      _id: result.id,
+      user: user.bind(this, result._doc.user),
+      event: singleEvent.bind(this, fetchedEvent._id),
+      createdAt: new Date(result._doc.createdAt).toISOString(),
+      updatedAt: new Date(result._doc.createdAt).toISOString()
+    };
+  },
+  cancelBooking: async args => {
+    try {
+      const booking = await Booking.findById(args.bookingId).populate("event");
+      const event = {
+        ...booking.event._doc,
+        _id: booking.event.id,
+        creator: user.bind(this, booking.event.creator)
+      };
+      console.log("event", event);
+      await Booking.deleteOne({ _id: args.bookingId });
+      return event;
+    } catch (err) {}
   }
 };
