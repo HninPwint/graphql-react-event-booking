@@ -17,4 +17,6 @@ const userSchema = new Schema({
     }]
     }
 );
+console.log('User Model');
 module.exports = mongoose.model('User', userSchema);
+console.log('User Model done');
