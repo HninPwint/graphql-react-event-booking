@@ -33,6 +33,7 @@
   color: #000000;
 }
 .main_navigation__items a:hover,
-.main_navigation__items a:active main_navigation__items a.active {
+.main_navigation__items a:active,
+.main_navigation__items a.active {
   color: #cd214a;
 }
