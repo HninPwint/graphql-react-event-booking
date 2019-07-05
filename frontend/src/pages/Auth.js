@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import "./Auth.css";
+import AuthContext from "../context/auth-context";
 
 class AuthPage extends Component {
   state = {
     isLogin: true
   };
+  static contextType = AuthContext;
 
   constructor(props) {
     super(props);
@@ -48,7 +50,7 @@ class AuthPage extends Component {
       };
     }
 
-    fetch("http://localhoFst:8000/graphql", {
+    fetch("http://localhost:8000/graphql", {
       method: "POST",
       body: JSON.stringify(requestBody),
       headers: {
@@ -62,7 +64,13 @@ class AuthPage extends Component {
         return res.json();
       })
       .then(resData => {
-        console.log("data", resData);
+        if (resData.data.login.token) {
+          this.context.login(
+            resData.data.login.token,
+            resData.data.login.userId,
+            resData.data.login.tokenExpiration
+          );
+        }
       })
       .catch(err => {
         console.log(err);
@@ -70,6 +78,7 @@ class AuthPage extends Component {
   };
 
   render() {
+    console.log("this.state.isLogin", this.state.isLogin);
     return (
       <form className="auth-form" onSubmit={this.submitHandler}>
         <div className="form-control">
