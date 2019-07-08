@@ -78,7 +78,6 @@ class AuthPage extends Component {
   };
 
   render() {
-    console.log("this.state.isLogin", this.state.isLogin);
     return (
       <form className="auth-form" onSubmit={this.submitHandler}>
         <div className="form-control">
