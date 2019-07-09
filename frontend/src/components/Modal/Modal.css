@@ -21,7 +21,7 @@
 .modal__content {
     padding: 1rem;
 }
-.model__actions {
+.modal__actions {
     display: flex;
     justify-content: flex-end;
     padding: 1rem;
