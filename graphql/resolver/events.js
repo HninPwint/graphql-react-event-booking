@@ -10,6 +10,7 @@ module.exports = {
                 return transformEvent(event);
             });
         } catch (err) {
+            console.log('Transform err',  err);
             throw err;
         }
     },

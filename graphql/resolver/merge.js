@@ -14,8 +14,10 @@ const events = async eventIds => {
 };
 
 const singleEvent = async eventId => {
+  console.log("singleEvent", eventId);
   try {
     const event = await Event.findById(eventId);
+    console.log("singleEventDetail", event);
     return transformEvent(event);
   } catch (err) {
     throw err;
@@ -26,9 +28,9 @@ const user = async userId => {
   try {
     const bookingEventUser = await User.findById(userId);
     return {
-      ...user._doc,
-      _id: user.id,
-      createdEvents: events.bind(this, bookingEventUser._doc.createdEvents)
+      ...bookingEventUser._doc,
+      _id: bookingEventUser.id,
+      createdEvents: events.bind(this, bookingEventUser.createdEvents)
     };
   } catch (err) {
     throw err;
@@ -36,22 +38,24 @@ const user = async userId => {
 };
 
 const transformEvent = event => {
+  console.log("transformEvent", event);
   return {
     ...event._doc,
     _id: event.id,
-    date: dateToString(event._doc.date),
+    date: dateToString(event.date),
     creator: user.bind(this, event.creator)
   };
 };
 
 const transformBooking = booking => {
+  console.log("transformBooking", booking);
   return {
     ...booking._doc,
     _id: booking.id,
-    user: user.bind(this, booking._doc.user),
-    event: singleEvent.bind(this, booking._doc.event),
-    createdAt: dateToString(booking._doc.createdAt),
-    updatedAt: dateToString(booking._doc.updatedAt)
+    user: user.bind(this, booking.user),
+    event: singleEvent.bind(this, booking.event),
+    createdAt: dateToString(booking.createdAt),
+    updatedAt: dateToString(booking.updatedAt)
   };
 };
 
